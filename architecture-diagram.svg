@@ -1,0 +1,299 @@
+<svg viewBox="0 0 1140 790" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <defs>
+    <!-- Subtle glow filters -->
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#3b82f6" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-emerald" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#10b981" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-amber" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#f59e0b" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-purple" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#a855f7" flood-opacity="0.3"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Arrow markers (end) -->
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#3b82f6" stroke-width="1.2"/>
+    </marker>
+    <marker id="arrow-emerald" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#10b981" stroke-width="1.2"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#f59e0b" stroke-width="1.2"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#a855f7" stroke-width="1.2"/>
+    </marker>
+    <marker id="arrow-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#525252" stroke-width="1.2"/>
+    </marker>
+    <marker id="arrow-white" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="none" stroke="#d4d4d4" stroke-width="1.2"/>
+    </marker>
+
+    <!-- Arrow markers (start — reversed for bidirectional) -->
+    <marker id="arrow-blue-start" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+      <path d="M8,0 L0,3 L8,6" fill="none" stroke="#3b82f6" stroke-width="1.2"/>
+    </marker>
+    <marker id="arrow-amber-start" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+      <path d="M8,0 L0,3 L8,6" fill="none" stroke="#f59e0b" stroke-width="1.2"/>
+    </marker>
+
+    <!-- Grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="0.5" fill="#ffffff" opacity="0.04"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1140" height="790" rx="16" fill="#141414"/>
+  <rect width="1140" height="790" rx="16" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <text x="570" y="36" text-anchor="middle" fill="#e5e5e5" font-size="15" font-weight="600" letter-spacing="0.5">System Architecture</text>
+  <text x="570" y="52" text-anchor="middle" fill="#737373" font-size="10" letter-spacing="2">CONTROL PLANE  ·  MEDIA PLANE  ·  INTELLIGENCE PLANE</text>
+
+  <!-- Shifted down 20px for spacing below subtitle -->
+  <g transform="translate(0, 20)">
+
+  <!-- ============================================ -->
+  <!-- CLIENTS -->
+  <!-- ============================================ -->
+  <g>
+    <text x="95" y="100" text-anchor="middle" fill="#737373" font-size="9" letter-spacing="1.5" font-weight="500">CLIENTS</text>
+    <rect x="24" y="114" width="142" height="50" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1"/>
+    <text x="95" y="136" text-anchor="middle" fill="#d4d4d4" font-size="11" font-weight="500">Web Client</text>
+    <text x="95" y="152" text-anchor="middle" fill="#525252" font-size="8.5">SolidJS · mediasoup-client</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- MEDIA HOST (outer container) -->
+  <!-- ============================================ -->
+  <rect x="186" y="76" width="530" height="178" rx="14" fill="none" stroke="#737373" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="6 4"/>
+  <text x="451" y="92" text-anchor="middle" fill="#a0a0a0" font-size="9" letter-spacing="1.5" font-weight="500" opacity="0.8">MEDIA HOST</text>
+
+  <!-- ============================================ -->
+  <!-- CONTROL PLANE (inside Media Host) -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="196" y="100" width="228" height="146" rx="12" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 3"/>
+    <text x="310" y="118" text-anchor="middle" fill="#3b82f6" font-size="9" letter-spacing="1.5" font-weight="600" opacity="0.8">CONTROL PLANE</text>
+
+    <!-- Signal -->
+    <rect x="210" y="128" width="200" height="64" rx="8" fill="#1a1a2a" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="310" y="149" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="600">Signal</text>
+    <text x="310" y="165" text-anchor="middle" fill="#3b82f6" font-size="8.5" opacity="0.5">Rust · WebSocket · Proto3</text>
+    <text x="310" y="179" text-anchor="middle" fill="#3b82f6" font-size="7.5" opacity="0.5">JWT validation via Core public key</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- MEDIA PLANE (inside Media Host) -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="444" y="100" width="262" height="146" rx="12" fill="none" stroke="#10b981" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 3"/>
+    <text x="575" y="118" text-anchor="middle" fill="#10b981" font-size="9" letter-spacing="1.5" font-weight="600" opacity="0.8">MEDIA PLANE</text>
+
+    <!-- SFU -->
+    <rect x="458" y="128" width="240" height="44" rx="8" fill="#1a2a1a" stroke="#10b981" stroke-width="1" stroke-opacity="0.4"/>
+    <text x="578" y="147" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="600">SFU</text>
+    <text x="578" y="161" text-anchor="middle" fill="#10b981" font-size="8.5" opacity="0.5">Rust · mediasoup · WebRTC</text>
+
+    <!-- Coturn -->
+    <rect x="458" y="180" width="240" height="38" rx="8" fill="#1a2a1a" stroke="#10b981" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="578" y="197" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="500">Coturn</text>
+    <text x="578" y="211" text-anchor="middle" fill="#10b981" font-size="8.5" opacity="0.5">STUN/TURN · NAT Traversal</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- BACKEND HOST (outer container) -->
+  <!-- ============================================ -->
+  <rect x="728" y="76" width="292" height="160" rx="14" fill="#ffffff" fill-opacity="0.01" stroke="#737373" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="6 4"/>
+  <text x="874" y="92" text-anchor="middle" fill="#a0a0a0" font-size="9" letter-spacing="1.5" font-weight="500" opacity="0.8">BACKEND HOST</text>
+
+  <g>
+    <!-- Edge (top — user-facing, client arrow points here) -->
+    <rect x="740" y="114" width="165" height="44" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1"/>
+    <text x="822" y="133" text-anchor="middle" fill="#d4d4d4" font-size="11" font-weight="500">Edge</text>
+    <text x="822" y="148" text-anchor="middle" fill="#525252" font-size="8.5">Go · User Facing</text>
+
+    <!-- edge-db -->
+    <rect x="913" y="117" width="86" height="38" rx="6" fill="#141414" stroke="#262626" stroke-width="0.5" stroke-opacity="0.6"/>
+    <text x="956" y="133" text-anchor="middle" fill="#737373" font-size="9.5" font-weight="500">edge-db</text>
+    <text x="956" y="146" text-anchor="middle" fill="#525252" font-size="7.5">PostgreSQL</text>
+    <line x1="905" y1="136" x2="913" y2="136" stroke="#262626" stroke-width="0.5"/>
+
+    <!-- Core (bottom) -->
+    <rect x="740" y="168" width="165" height="44" rx="8" fill="#1a1a1a" stroke="#262626" stroke-width="1"/>
+    <text x="822" y="187" text-anchor="middle" fill="#d4d4d4" font-size="11" font-weight="500">Core</text>
+    <text x="822" y="202" text-anchor="middle" fill="#525252" font-size="8.5">Kotlin · Spring · Auth</text>
+
+    <!-- core-db -->
+    <rect x="913" y="171" width="86" height="38" rx="6" fill="#141414" stroke="#262626" stroke-width="0.5" stroke-opacity="0.6"/>
+    <text x="956" y="187" text-anchor="middle" fill="#737373" font-size="9.5" font-weight="500">core-db</text>
+    <text x="956" y="200" text-anchor="middle" fill="#525252" font-size="7.5">PostgreSQL</text>
+    <line x1="905" y1="190" x2="913" y2="190" stroke="#262626" stroke-width="0.5"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- INTELLIGENCE PLANE — AI HOST -->
+  <!-- ============================================ -->
+  <g>
+    <rect x="20" y="296" width="1100" height="400" rx="12" fill="none" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 3"/>
+    <text x="570" y="312" text-anchor="middle" fill="#a0a0a0" font-size="9" letter-spacing="1.5" font-weight="500" opacity="0.8">AI HOST</text>
+    <text x="570" y="326" text-anchor="middle" fill="#f59e0b" font-size="9" letter-spacing="1.5" font-weight="600" opacity="0.8">INTELLIGENCE PLANE</text>
+
+    <!-- Orchestrator -->
+    <rect x="370" y="342" width="400" height="100" rx="10" fill="#1a1a1a" stroke="#f59e0b" stroke-width="1.2" stroke-opacity="0.5"/>
+    <rect x="370" y="342" width="400" height="100" rx="10" fill="#f59e0b" fill-opacity="0.03"/>
+
+    <text x="570" y="366" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="700">Orchestrator</text>
+    <text x="570" y="382" text-anchor="middle" fill="#f59e0b" font-size="9" opacity="0.6" font-weight="500">Rust</text>
+
+    <!-- Chips (STT, TTS, LLM, Pipeline) -->
+    <rect x="448" y="392" width="46" height="20" rx="4" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.2"/>
+    <text x="471" y="406" text-anchor="middle" fill="#fbbf24" font-size="8" opacity="0.7">STT</text>
+
+    <rect x="502" y="392" width="46" height="20" rx="4" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.2"/>
+    <text x="525" y="406" text-anchor="middle" fill="#fbbf24" font-size="8" opacity="0.7">TTS</text>
+
+    <rect x="556" y="392" width="46" height="20" rx="4" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.2"/>
+    <text x="579" y="406" text-anchor="middle" fill="#fbbf24" font-size="8" opacity="0.7">LLM</text>
+
+    <rect x="610" y="392" width="82" height="20" rx="4" fill="#f59e0b" fill-opacity="0.08" stroke="#f59e0b" stroke-width="0.5" stroke-opacity="0.2"/>
+    <text x="651" y="406" text-anchor="middle" fill="#fbbf24" font-size="8" opacity="0.7">Pipeline</text>
+
+    <!-- Listening Engine -->
+    <rect x="60" y="486" width="330" height="174" rx="10" fill="#1a1a1a" stroke="#a855f7" stroke-width="1" stroke-opacity="0.4"/>
+    <rect x="60" y="486" width="330" height="174" rx="10" fill="#a855f7" fill-opacity="0.02"/>
+
+    <text x="225" y="510" text-anchor="middle" fill="#c084fc" font-size="13" font-weight="600">Listening Engine</text>
+    <text x="225" y="526" text-anchor="middle" fill="#a855f7" font-size="8.5" opacity="0.6" font-weight="500">C++</text>
+    <text x="225" y="540" text-anchor="middle" fill="#a855f7" font-size="8" opacity="0.45">libmediasoupclient · libwebrtc · ONNX Runtime</text>
+
+    <!-- Audio pipeline -->
+    <rect x="92" y="556" width="96" height="30" rx="6" fill="#a855f7" fill-opacity="0.08" stroke="#a855f7" stroke-width="0.5" stroke-opacity="0.25"/>
+    <text x="140" y="575" text-anchor="middle" fill="#c084fc" font-size="8.5" opacity="0.8">Silero VAD V6</text>
+
+    <line x1="192" y1="571" x2="208" y2="571" stroke="#a855f7" stroke-width="0.8" stroke-opacity="0.4" marker-end="url(#arrow-purple)"/>
+
+    <rect x="212" y="556" width="132" height="30" rx="6" fill="#a855f7" fill-opacity="0.08" stroke="#a855f7" stroke-width="0.5" stroke-opacity="0.25"/>
+    <text x="278" y="575" text-anchor="middle" fill="#c084fc" font-size="8.5" opacity="0.8">SmartTurn V3</text>
+
+    <!-- Audio Gate (purple themed) -->
+    <rect x="115" y="600" width="210" height="28" rx="6" fill="#a855f7" fill-opacity="0.06" stroke="#a855f7" stroke-width="0.5" stroke-opacity="0.25"/>
+    <text x="220" y="618" text-anchor="middle" fill="#c084fc" font-size="9" opacity="0.7">Audio Gate</text>
+
+    <!-- Speaking Engine -->
+    <rect x="750" y="486" width="330" height="174" rx="10" fill="#1a1a1a" stroke="#a855f7" stroke-width="1" stroke-opacity="0.4"/>
+    <rect x="750" y="486" width="330" height="174" rx="10" fill="#a855f7" fill-opacity="0.02"/>
+
+    <text x="915" y="510" text-anchor="middle" fill="#c084fc" font-size="13" font-weight="600">Speaking Engine</text>
+    <text x="915" y="526" text-anchor="middle" fill="#a855f7" font-size="8.5" opacity="0.6" font-weight="500">C++</text>
+    <text x="915" y="540" text-anchor="middle" fill="#a855f7" font-size="8" opacity="0.45">libmediasoupclient · libwebrtc · Custom ADM</text>
+
+    <!-- Audio pipeline -->
+    <rect x="782" y="556" width="96" height="30" rx="6" fill="#a855f7" fill-opacity="0.08" stroke="#a855f7" stroke-width="0.5" stroke-opacity="0.25"/>
+    <text x="830" y="575" text-anchor="middle" fill="#c084fc" font-size="8.5" opacity="0.8">SPSC Queue</text>
+
+    <line x1="882" y1="571" x2="898" y2="571" stroke="#a855f7" stroke-width="0.8" stroke-opacity="0.4" marker-end="url(#arrow-purple)"/>
+
+    <rect x="902" y="556" width="132" height="30" rx="6" fill="#a855f7" fill-opacity="0.08" stroke="#a855f7" stroke-width="0.5" stroke-opacity="0.25"/>
+    <text x="968" y="575" text-anchor="middle" fill="#c084fc" font-size="8.5" opacity="0.8">ADM (Pull Based)</text>
+
+    <!-- Outbound stream -->
+    <rect x="805" y="600" width="210" height="28" rx="6" fill="#a855f7" fill-opacity="0.06" stroke="#a855f7" stroke-width="0.5" stroke-opacity="0.25"/>
+    <text x="910" y="618" text-anchor="middle" fill="#c084fc" font-size="9" opacity="0.7">Outbound Audio Stream</text>
+  </g>
+
+  <!-- ============================================ -->
+  <!-- CONNECTIONS -->
+  <!-- ============================================ -->
+
+  <!-- Client ↔ Signal (WS) -->
+  <line x1="166" y1="140" x2="206" y2="140" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.5" marker-start="url(#arrow-blue-start)" marker-end="url(#arrow-blue)"/>
+  <text x="186" y="134" text-anchor="middle" fill="#3b82f6" font-size="7" opacity="0.6">WS</text>
+
+  <!-- Client → SFU (WebRTC/RTP) over the top -->
+  <path d="M 68 114 L 68 68 L 578 68 L 578 128" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.5" fill="none" marker-end="url(#arrow-emerald)"/>
+  <text x="290" y="64" text-anchor="middle" fill="#10b981" font-size="7" opacity="0.6">WebRTC / RTP</text>
+
+  <!-- Client → Edge (HTTPS API) over the top -->
+  <path d="M 104 114 L 104 50 L 822 50 L 822 114" stroke="#d4d4d4" stroke-width="1" stroke-opacity="0.5" fill="none" marker-end="url(#arrow-white)"/>
+  <text x="760" y="46" text-anchor="middle" fill="#d4d4d4" font-size="7" opacity="0.7">HTTPS (API)</text>
+
+  <!-- Signal ↔ SFU (gRPC) -->
+  <line x1="414" y1="150" x2="454" y2="150" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.5" marker-start="url(#arrow-blue-start)" marker-end="url(#arrow-blue)"/>
+  <text x="434" y="143" text-anchor="middle" fill="#3b82f6" font-size="7" opacity="0.6">gRPC</text>
+
+  <!-- Signal ↔ Orchestrator (System WS) -->
+  <path d="M 300 192 L 300 264 L 530 264 L 530 342" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.4" fill="none" marker-start="url(#arrow-blue-start)" marker-end="url(#arrow-blue)"/>
+  <text x="418" y="260" text-anchor="middle" fill="#3b82f6" font-size="7" opacity="0.5">System WS</text>
+
+  <!-- Signal ↔ Orchestrator (Session WS) -->
+  <path d="M 330 192 L 330 278 L 490 278 L 490 342" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.4" fill="none" marker-start="url(#arrow-blue-start)" marker-end="url(#arrow-blue)"/>
+  <text x="410" y="288" text-anchor="middle" fill="#3b82f6" font-size="7" opacity="0.5">Session WS</text>
+
+  <!-- SFU → Listening Engine (User Audio RTP) -->
+  <path d="M 520 172 L 520 252 L 225 252 L 225 486" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.6" fill="none" marker-end="url(#arrow-emerald)"/>
+  <rect x="155" y="393" width="140" height="16" rx="3" fill="#141414"/>
+  <text x="225" y="404" text-anchor="middle" fill="#10b981" font-size="8" font-weight="500" opacity="0.7">User Audio (RTP)</text>
+
+  <!-- Speaking Engine → SFU (AI Audio RTP) -->
+  <path d="M 915 486 L 915 252 L 640 252 L 640 172" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.6" fill="none" marker-end="url(#arrow-emerald)"/>
+  <rect x="870" y="393" width="90" height="16" rx="3" fill="#141414"/>
+  <text x="915" y="404" text-anchor="middle" fill="#10b981" font-size="8" font-weight="500" opacity="0.7">AI Audio (RTP)</text>
+
+  <!-- Orchestrator ↔ Listening Engine (gRPC/UDS — bidirectional arrows) -->
+  <path d="M 300 486 L 300 464 L 430 464 L 430 442" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.5" fill="none" marker-start="url(#arrow-amber-start)" marker-end="url(#arrow-amber)"/>
+  <text x="365" y="460" text-anchor="middle" fill="#f59e0b" font-size="7" opacity="0.5">gRPC / UDS</text>
+
+  <!-- Listening Engine → Orchestrator (User Audio PCM) -->
+  <path d="M 320 486 L 320 474 L 450 474 L 450 442" stroke="#f59e0b" stroke-width="0.8" stroke-opacity="0.35" fill="none" marker-end="url(#arrow-amber)" stroke-dasharray="3 2"/>
+  <text x="385" y="484" text-anchor="middle" fill="#f59e0b" font-size="7" opacity="0.35">User Audio (PCM)</text>
+
+  <!-- Orchestrator ↔ Speaking Engine (gRPC/UDS — bidirectional arrows) -->
+  <path d="M 850 486 L 850 464 L 710 464 L 710 442" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.5" fill="none" marker-start="url(#arrow-amber-start)" marker-end="url(#arrow-amber)"/>
+  <text x="780" y="460" text-anchor="middle" fill="#f59e0b" font-size="7" opacity="0.5">gRPC / UDS</text>
+
+  <!-- Orchestrator → Speaking Engine (TTS Audio PCM) -->
+  <path d="M 690 442 L 690 474 L 830 474 L 830 486" stroke="#f59e0b" stroke-width="0.8" stroke-opacity="0.35" fill="none" marker-end="url(#arrow-amber)" stroke-dasharray="3 2"/>
+  <text x="760" y="484" text-anchor="middle" fill="#f59e0b" font-size="7" opacity="0.35">TTS Audio (PCM)</text>
+
+  <!-- ============================================ -->
+  <!-- LEGEND -->
+  <!-- ============================================ -->
+  <g transform="translate(30, 738)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="#3b82f6" stroke-width="1.2"/>
+    <text x="26" y="3.5" fill="#525252" font-size="8">Signaling (WS/Proto3)</text>
+
+    <line x1="170" y1="0" x2="190" y2="0" stroke="#10b981" stroke-width="1.5"/>
+    <text x="196" y="3.5" fill="#525252" font-size="8">Media (RTP/WebRTC)</text>
+
+    <line x1="340" y1="0" x2="360" y2="0" stroke="#f59e0b" stroke-width="1.2"/>
+    <text x="366" y="3.5" fill="#525252" font-size="8">IPC (gRPC/UDS/Proto3)</text>
+
+    <line x1="490" y1="0" x2="510" y2="0" stroke="#d4d4d4" stroke-width="1"/>
+    <text x="516" y="3.5" fill="#525252" font-size="8">API (HTTPS)</text>
+
+    <line x1="610" y1="0" x2="630" y2="0" stroke="#525252" stroke-width="1" stroke-dasharray="3 2"/>
+    <text x="636" y="3.5" fill="#525252" font-size="8">Infrastructure</text>
+  </g>
+
+  </g><!-- end translate(0, 20) -->
+
+</svg>

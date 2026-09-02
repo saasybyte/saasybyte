@@ -1,0 +1,243 @@
+# SaasyByte full-stack compose. Builds every service from source.
+#
+# Expects the service repositories cloned as siblings of this one (see the
+# README quickstart), and a .env file next to this compose (see .env.example).
+#
+# The web client is not containerized here; run it separately:
+#   cd ../saasy-web && bun install && bun dev
+#
+# Note: the media-engine images build FROM the prebuilt vendor/builder-deps
+# images on GHCR (ghcr.io/saasybyte/saasy-media-engine-*). Their first pull is
+# large (prebuilt libwebrtc toolchain).
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # ------------------------------
+  # databases
+  # ------------------------------
+  core-db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ${CORE_DB_USER:?CORE_DB_USER is required}
+      POSTGRES_PASSWORD: ${CORE_DB_PASSWORD:?CORE_DB_PASSWORD is required}
+      POSTGRES_DB: saasy-core-db
+    volumes:
+      - core-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+    restart: unless-stopped
+
+  edge-db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ${EDGE_DB_USER:?EDGE_DB_USER is required}
+      POSTGRES_PASSWORD: ${EDGE_DB_PASSWORD:?EDGE_DB_PASSWORD is required}
+      POSTGRES_DB: saasy-edge-db
+    volumes:
+      - edge-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+    restart: unless-stopped
+
+  # ------------------------------
+  # backend services
+  # ------------------------------
+  core:
+    build: ../saasy-core
+    environment:
+      DB_HOST: core-db
+      DB_PORT: 5432
+      DB_NAME: saasy-core-db
+      DB_USER: ${CORE_DB_USER:?CORE_DB_USER is required}
+      DB_PASSWORD: ${CORE_DB_PASSWORD:?CORE_DB_PASSWORD is required}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:?JWT_PRIVATE_KEY is required}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required}
+      CORS_ALLOWED_ORIGINS: http://localhost:5173
+      PORT: 8082
+      GRPC_PORT: 9092
+    ports:
+      - "8082:8082"
+    depends_on:
+      core-db:
+        condition: service_healthy
+    logging: *default-logging
+    restart: unless-stopped
+
+  edge-migrate:
+    build: ../saasy-edge
+    command:
+      - migrate
+      - -path
+      - ./db/migrations
+      - -database
+      - postgres://${EDGE_DB_USER:?EDGE_DB_USER is required}:${EDGE_DB_PASSWORD:?EDGE_DB_PASSWORD is required}@edge-db:5432/saasy-edge-db?sslmode=disable
+      - up
+    depends_on:
+      edge-db:
+        condition: service_healthy
+    logging: *default-logging
+
+  edge:
+    build: ../saasy-edge
+    environment:
+      DB_HOST: edge-db
+      DB_PORT: 5432
+      DB_NAME: saasy-edge-db
+      DB_USER: ${EDGE_DB_USER:?EDGE_DB_USER is required}
+      DB_PASSWORD: ${EDGE_DB_PASSWORD:?EDGE_DB_PASSWORD is required}
+      WEB_URL: http://localhost:5173
+      PORT: 8080
+      GRPC_PORT: 9090
+    ports:
+      - "8080:8080"
+    depends_on:
+      edge-migrate:
+        condition: service_completed_successfully
+    logging: *default-logging
+    restart: unless-stopped
+
+  # ------------------------------
+  # media plane
+  # ------------------------------
+  sfu:
+    build: ../saasy-sfu
+    environment:
+      HTTP_HOST: 0.0.0.0
+      HTTP_PORT: 9091
+      GRPC_HOST: 0.0.0.0
+      GRPC_PORT: 50051
+      GRPC_CONCURRENCY_LIMIT: 128
+      MEDIASOUP_WORKERS: 2
+      MEDIASOUP_LOG: warn
+      LISTEN_IP_ADDR: 0.0.0.0
+      # The IP announced to browsers in ICE candidates. 127.0.0.1 works when
+      # the browser runs on the same machine; use the host's LAN/public IP
+      # otherwise.
+      ANNOUNCED_IP_ADDR: ${ANNOUNCED_IP_ADDR:-127.0.0.1}
+      MAX_SESSIONS_PER_ROUTER: 250
+      SUBSCRIBE_CHANNEL_CAPACITY: 128
+      RUST_LOG: info
+    ports:
+      - "10000-10001:10000-10001/udp" # WebRTC media (one port per worker)
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+    restart: unless-stopped
+
+  # ------------------------------
+  # control plane
+  # ------------------------------
+  signal:
+    build: ../saasy-signal
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      SFU_HTTP_URL: http://sfu:9091
+      SFU_GRPC_URL: http://sfu:50051
+      CORE_GRPC_URL: http://core:9092
+      JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY:?JWT_PUBLIC_KEY is required}
+      ACTIX_WORKERS: 2
+      RUST_LOG: info
+    ports:
+      - "3000:3000"
+    depends_on:
+      sfu:
+        condition: service_healthy
+    logging: *default-logging
+    restart: unless-stopped
+
+  # ------------------------------
+  # intelligence plane
+  # ------------------------------
+  listening-engine:
+    build:
+      context: ../saasy-media-engine
+      dockerfile: docker/listening-engine/Dockerfile
+      args:
+        VENDOR_TAG: ${VENDOR_TAG:-latest}
+        BUILDER_DEPS_TAG: ${BUILDER_DEPS_TAG:-latest}
+    volumes:
+      - engine-uds:/tmp
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=unix:/tmp/listening-engine.sock"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+    restart: unless-stopped
+
+  speaking-engine:
+    build:
+      context: ../saasy-media-engine
+      dockerfile: docker/speaking-engine/Dockerfile
+      args:
+        VENDOR_TAG: ${VENDOR_TAG:-latest}
+        BUILDER_DEPS_TAG: ${BUILDER_DEPS_TAG:-latest}
+    volumes:
+      - engine-uds:/tmp
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=unix:/tmp/speaking-engine.sock"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging: *default-logging
+    restart: unless-stopped
+
+  orchestrator:
+    build: ../saasy-orchestrator
+    environment:
+      HTTP_HOST: 0.0.0.0
+      HTTP_PORT: 8081
+      SIGNAL_HTTP_URL: http://signal:3000
+      SIGNAL_SYSTEM_WS_URL: ws://signal:3000/ws/system
+      SIGNAL_SESSION_WS_URL: ws://signal:3000/ws/session
+      EDGE_GRPC_URL: http://edge:9090
+      LISTENING_ENGINE_GRPC_UDS: /tmp/listening-engine.sock
+      SPEAKING_ENGINE_GRPC_UDS: /tmp/speaking-engine.sock
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?OPENAI_API_KEY is required}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY is required}
+      XAI_API_KEY: ${XAI_API_KEY:?XAI_API_KEY is required}
+      GROQ_API_KEY: ${GROQ_API_KEY:?GROQ_API_KEY is required}
+      DEEPGRAM_API_KEY: ${DEEPGRAM_API_KEY:?DEEPGRAM_API_KEY is required}
+      SPEECHMATICS_API_KEY: ${SPEECHMATICS_API_KEY:?SPEECHMATICS_API_KEY is required}
+      CARTESIA_API_KEY: ${CARTESIA_API_KEY:?CARTESIA_API_KEY is required}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:?ELEVENLABS_API_KEY is required}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:?GCP_PROJECT_ID is required}
+      GCP_REGION: ${GCP_REGION:-global}
+      GCP_SA_JSON: ${GCP_SA_JSON:?GCP_SA_JSON is required}
+      AWS_REGION: ${AWS_REGION:-us-east-2}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?AWS_ACCESS_KEY_ID is required}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?AWS_SECRET_ACCESS_KEY is required}
+      RUST_LOG: info
+    volumes:
+      - engine-uds:/tmp
+    depends_on:
+      signal:
+        condition: service_started
+      listening-engine:
+        condition: service_healthy
+      speaking-engine:
+        condition: service_healthy
+    logging: *default-logging
+    restart: unless-stopped
+
+volumes:
+  core-db-data:
+  edge-db-data:
+  engine-uds:
